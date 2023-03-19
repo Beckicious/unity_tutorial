@@ -414,6 +414,7 @@ MonoBehaviour:
   touchedColor: {r: 1, g: 0, b: 1, a: 1}
   cellPrefab: {fileID: 1753582479397839053, guid: 32567e37bb58a3144aa3917edf280b81, type: 3}
   cellLabelPrefab: {fileID: 208853228684124237, guid: 35354134d8e07914b9051a12acf920a8, type: 3}
+  noiseSource: {fileID: 2800000, guid: 38726d1913ac80b4b92a8926166c13df, type: 3}
 --- !u!4 &187932348
 Transform:
   m_ObjectHideFlags: 0
