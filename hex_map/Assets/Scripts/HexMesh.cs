@@ -8,9 +8,9 @@ public class HexMesh : MonoBehaviour
 {
     Mesh hexMesh;
     MeshCollider meshCollider;
-    List<Vector3> vertices;
-    List<int> triangles;
-    List<Color> colors;
+    static List<Vector3> vertices = new List<Vector3>();
+    static List<int> triangles = new List<int>();
+    static List<Color> colors = new List<Color>();
 
     private void Awake()
     {
@@ -18,9 +18,6 @@ public class HexMesh : MonoBehaviour
         meshCollider = gameObject.AddComponent<MeshCollider>();
 
         hexMesh.name = "Hex Mesh";
-        vertices = new List<Vector3>();
-        colors = new List<Color>();
-        triangles = new List<int>();
     }
 
     public void Triangulate(HexCell[] cells)
@@ -56,7 +53,7 @@ public class HexMesh : MonoBehaviour
             center + HexMetrics.GetSecondSolidCorner(direction)
         );
 
-        TriangulateEdgeFan(center, e, cell.color);
+        TriangulateEdgeFan(center, e, cell.Color);
 
         if (direction <= HexDirection.SE)
         {
@@ -82,7 +79,7 @@ public class HexMesh : MonoBehaviour
         }
         else
         {
-            TriangulateEdgeStrip(e1, cell.color, e2, neighbor.color);
+            TriangulateEdgeStrip(e1, cell.Color, e2, neighbor.Color);
         }
 
         HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
@@ -116,9 +113,9 @@ public class HexMesh : MonoBehaviour
     void TriangulateEdgeTerraces(EdgeVertices begin, HexCell beginCell, EdgeVertices end, HexCell endCell)
     {
         EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
-        Color c2 = HexMetrics.TerraceLerp(beginCell.color, endCell.color, 1);
+        Color c2 = HexMetrics.TerraceLerp(beginCell.Color, endCell.Color, 1);
 
-        TriangulateEdgeStrip(begin, beginCell.color, e2, c2);
+        TriangulateEdgeStrip(begin, beginCell.Color, e2, c2);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
@@ -126,12 +123,12 @@ public class HexMesh : MonoBehaviour
             Color c1 = c2;
 
             e2 = EdgeVertices.TerraceLerp(begin, end, i);
-            c2 = HexMetrics.TerraceLerp(beginCell.color, endCell.color, i);
+            c2 = HexMetrics.TerraceLerp(beginCell.Color, endCell.Color, i);
 
             TriangulateEdgeStrip(e1, c1, e2, c2);
         }
 
-        TriangulateEdgeStrip(e2, c2, end, endCell.color);
+        TriangulateEdgeStrip(e2, c2, end, endCell.Color);
     }
 
     void TriangulateCorner(Vector3 bottom, HexCell bottomCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
@@ -179,7 +176,7 @@ public class HexMesh : MonoBehaviour
         else
         {
             AddTriangle(bottom, left, right);
-            AddTriangleColor(bottomCell.color, leftCell.color, rightCell.color);
+            AddTriangleColor(bottomCell.Color, leftCell.Color, rightCell.Color);
         }
     }
 
@@ -187,11 +184,11 @@ public class HexMesh : MonoBehaviour
     {
         Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
         Vector3 v4 = HexMetrics.TerraceLerp(begin, right, 1);
-        Color c3 = HexMetrics.TerraceLerp(beginCell.color, leftCell.color, 1);
-        Color c4 = HexMetrics.TerraceLerp(beginCell.color, rightCell.color, 1);
+        Color c3 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, 1);
+        Color c4 = HexMetrics.TerraceLerp(beginCell.Color, rightCell.Color, 1);
 
         AddTriangle(begin, v3, v4);
-        AddTriangleColor(beginCell.color, c3, c4);
+        AddTriangleColor(beginCell.Color, c3, c4);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
@@ -202,15 +199,15 @@ public class HexMesh : MonoBehaviour
 
             v3 = HexMetrics.TerraceLerp(begin, left, i);
             v4 = HexMetrics.TerraceLerp(begin, right, i);
-            c3 = HexMetrics.TerraceLerp(beginCell.color, leftCell.color, i);
-            c4 = HexMetrics.TerraceLerp(beginCell.color, rightCell.color, i);
+            c3 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, i);
+            c4 = HexMetrics.TerraceLerp(beginCell.Color, rightCell.Color, i);
 
             AddQuad(v1, v2, v3, v4);
             AddQuadColor(c1, c2, c3, c4);
         }
 
         AddQuad(v3, v4, left, right);
-        AddQuadColor(c3, c4, leftCell.color, rightCell.color);
+        AddQuadColor(c3, c4, leftCell.Color, rightCell.Color);
     }
 
     void TriangulateCornerTerracesCliff(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
@@ -218,7 +215,7 @@ public class HexMesh : MonoBehaviour
         float b = 1f / (rightCell.Elevation - beginCell.Elevation);
         if (b < 0) b = -b;
         Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(right), b);
-        Color boundaryColor = Color.Lerp(beginCell.color, rightCell.color, b);
+        Color boundaryColor = Color.Lerp(beginCell.Color, rightCell.Color, b);
 
         TriangulateBoundaryTriangle(begin, beginCell, left, leftCell, boundary, boundaryColor);
 
@@ -229,7 +226,7 @@ public class HexMesh : MonoBehaviour
         else
         {
             AddTriangleUnperturbed(Perturb(left), Perturb(right), boundary);
-            AddTriangleColor(leftCell.color, rightCell.color, boundaryColor);
+            AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
         }
     }
 
@@ -238,7 +235,7 @@ public class HexMesh : MonoBehaviour
         float b = 1f / (leftCell.Elevation - beginCell.Elevation);
         if (b < 0) b = -b;
         Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(left), b);
-        Color boundaryColor = Color.Lerp(beginCell.color, leftCell.color, b);
+        Color boundaryColor = Color.Lerp(beginCell.Color, leftCell.Color, b);
 
         TriangulateBoundaryTriangle(right, rightCell, begin, beginCell, boundary, boundaryColor);
 
@@ -249,17 +246,17 @@ public class HexMesh : MonoBehaviour
         else
         {
             AddTriangleUnperturbed(Perturb(left), Perturb(right), boundary);
-            AddTriangleColor(leftCell.color, rightCell.color, boundaryColor);
+            AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
         }
     }
 
     void TriangulateBoundaryTriangle(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 boundary, Color boundaryColor)
     {
         Vector3 v2 = Perturb(HexMetrics.TerraceLerp(begin, left, 1));
-        Color c2 = HexMetrics.TerraceLerp(beginCell.color, leftCell.color, 1);
+        Color c2 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, 1);
 
         AddTriangleUnperturbed(Perturb(begin), v2, boundary);
-        AddTriangleColor(beginCell.color, c2, boundaryColor);
+        AddTriangleColor(beginCell.Color, c2, boundaryColor);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
@@ -267,14 +264,14 @@ public class HexMesh : MonoBehaviour
             Color c1 = c2;
 
             v2 = Perturb(HexMetrics.TerraceLerp(begin, left, i));
-            c2 = HexMetrics.TerraceLerp(beginCell.color, leftCell.color, i);
+            c2 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, i);
 
             AddTriangleUnperturbed(v1, v2, boundary);
             AddTriangleColor(c1, c2, boundaryColor);
         }
 
         AddTriangleUnperturbed(v2, Perturb(left), boundary);
-        AddTriangleColor(c2, leftCell.color, boundaryColor);
+        AddTriangleColor(c2, leftCell.Color, boundaryColor);
     }
 
     void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, Color color)
