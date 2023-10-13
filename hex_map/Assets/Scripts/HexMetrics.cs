@@ -2,6 +2,8 @@ using UnityEngine;
 
 public static class HexMetrics
 {
+    // https://catlikecoding.com/unity/tutorials/hex-map/
+
     public const float outerToInner = 0.866025404f;
     public const float innerToOuter = 1f / outerToInner;
 
@@ -17,6 +19,7 @@ public static class HexMetrics
     public const float horizontalTerraceStepSize = 1f / terraceSteps;
     public const float verticalTerraceStepSize = 1f / (terracesPerSlope + 1);
     public const float streamBedElevationOffset = -1f;
+    public const float riverSurfaceElevationOffset = -0.5f;
 
     public static Texture2D noiseSource;
     public const float noiseScale = 0.003f;
@@ -96,5 +99,13 @@ public static class HexMetrics
     public static Vector3 GetSolidEdgeMiddle(HexDirection direction)
     {
         return (corners[(int)direction] + corners[(int)direction + 1]) * (0.5f * solidFactor);
+    }
+
+    public static Vector3 Perturb(Vector3 position)
+    {
+        Vector4 sample = SampleNoise(position);
+        position.x += (sample.x * 2f - 1f) * cellPerturbStrength;
+        position.z += (sample.z * 2f - 1f) * cellPerturbStrength;
+        return position;
     }
 }
