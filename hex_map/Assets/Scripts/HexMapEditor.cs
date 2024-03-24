@@ -22,6 +22,7 @@ public class HexMapEditor : MonoBehaviour
         No
     }
     OptionalToggle riverMode;
+    OptionalToggle roadMode;
 
     bool isDrag;
     HexDirection dragDirection;
@@ -124,12 +125,23 @@ public class HexMapEditor : MonoBehaviour
             {
                 cell.RemoveRiver();
             }
-            else if (isDrag && riverMode == OptionalToggle.Yes)
+            if (roadMode == OptionalToggle.No)
+            {
+                cell .RemoveRoads();
+            }
+            else if (isDrag)
             {
                 HexCell otherCell = cell.GetNeighbor(dragDirection.Opposite());
                 if (otherCell)
                 {
-                    otherCell.SetOutgoingRiver(dragDirection);
+                    if (riverMode == OptionalToggle.Yes)
+                    {
+                        otherCell.SetOutgoingRiver(dragDirection);
+                    }
+                    if (roadMode == OptionalToggle.Yes)
+                    {
+                        otherCell.AddRoad(dragDirection);
+                    }
                 }
             }
         }
@@ -162,5 +174,10 @@ public class HexMapEditor : MonoBehaviour
     public void SetRiverMode(int mode)
     {
         riverMode = (OptionalToggle)mode;
+    }
+
+    public void SetRoadMode(int mode)
+    {
+        roadMode = (OptionalToggle)mode;
     }
 }
