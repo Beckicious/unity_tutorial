@@ -29,8 +29,7 @@ public class HexCell : MonoBehaviour
             uiRect.localPosition = uiPosition;
 
             // river handling
-            if (hasOutgoingRiver && elevation < GetNeighbor(outgoingRiver).elevation) RemoveOutgoingRiver();
-            if (hasIncomingRiver && elevation > GetNeighbor(incomingRiver).elevation) RemoveIncomingRiver();
+            ValidateRivers();
 
             // road handling
             for (int i = 0; i < roads.Length; i++)
@@ -44,6 +43,24 @@ public class HexCell : MonoBehaviour
             Refresh();
         }
     }
+
+    private int waterLevel;
+    public int WaterLevel
+    {
+        get
+        {
+            return waterLevel;
+        }
+        set
+        {
+            if (waterLevel == value) return;
+            waterLevel = value;
+            ValidateRivers();
+            Refresh();
+        }
+    }
+
+    public bool IsUnderwater => waterLevel > elevation;
 
     public Vector3 Position
     {
@@ -92,7 +109,12 @@ public class HexCell : MonoBehaviour
 
     public float RiverSurfaceY
     {
-        get => (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
+        get => (elevation + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
+    }
+
+    public float WaterSurfaceY
+    {
+        get => (waterLevel + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
     }
 
     public bool HasIncomingRiver
@@ -114,6 +136,23 @@ public class HexCell : MonoBehaviour
     public bool HasRiver => hasIncomingRiver || hasOutgoingRiver;
     public bool HasRiverBeginOrEnd => hasIncomingRiver != hasOutgoingRiver;
 
+    private bool IsValidRiverDestination(HexCell neighbor)
+    {
+        return neighbor && (elevation >= neighbor.elevation || waterLevel == neighbor.elevation);
+    }
+
+    private void ValidateRivers()
+    {
+        if (hasOutgoingRiver && !IsValidRiverDestination(GetNeighbor(outgoingRiver)))
+        {
+            RemoveOutgoingRiver();
+        }
+        if (hasIncomingRiver && !GetNeighbor(incomingRiver).IsValidRiverDestination(this))
+        {
+            RemoveIncomingRiver();
+        }
+    }
+
     public bool HasRiverThroughEdge(HexDirection direction)
     {
         return hasIncomingRiver && IncomingRiver == direction
@@ -125,7 +164,7 @@ public class HexCell : MonoBehaviour
         if (hasOutgoingRiver && outgoingRiver == direction) return;
 
         HexCell neighbor = GetNeighbor(direction);
-        if (!neighbor || elevation < neighbor.elevation) return;
+        if (!IsValidRiverDestination(neighbor)) return;
 
         RemoveOutgoingRiver();
         if (hasIncomingRiver && incomingRiver == direction) RemoveIncomingRiver();
