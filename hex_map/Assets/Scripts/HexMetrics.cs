@@ -32,6 +32,22 @@ public static class HexMetrics
     public const int chunkSizeX = 5;
     public const int chunkSizeZ = 5;
 
+    public const int hashGridSize = 256;
+    public const float hashGridScale = 0.25f;
+    static HexHash[] hashGrid;
+
+    static float[][] featureThresholds =
+    {
+        new float[] {0.0f, 0.0f, 0.4f },
+        new float[] {0.0f, 0.4f, 0.6f },
+        new float[] {0.4f, 0.6f, 0.8f },
+    };
+
+    public static float[] GetFeatureThresholds(int level)
+    {
+        return featureThresholds[level];
+    }
+
     static Vector3[] corners =
     {
         new Vector3(0f, 0f, outerRadius),
@@ -125,5 +141,32 @@ public static class HexMetrics
         position.x += (sample.x * 2f - 1f) * cellPerturbStrength;
         position.z += (sample.z * 2f - 1f) * cellPerturbStrength;
         return position;
+    }
+
+    public static void InitializeHashGrid(int seed)
+    {
+        hashGrid = new HexHash[hashGridSize * hashGridSize];
+        Random.State currentState = Random.state;
+        Random.InitState(seed);
+        for (int i = 0; i < hashGrid.Length; i++)
+        {
+            hashGrid[i] = HexHash.Create();
+        }
+        Random.state = currentState;
+    }
+
+    public static HexHash SampleHashGrid(Vector3 position)
+    {
+        int x = (int)(position.x * hashGridScale) % hashGridSize;
+        if (x < 0)
+        {
+            x += hashGridSize;
+        }
+        int z = (int)(position.z * hashGridScale) % hashGridSize;
+        if (z < 0)
+        {
+            z += hashGridSize;
+        }
+        return hashGrid[x + z * hashGridSize];
     }
 }

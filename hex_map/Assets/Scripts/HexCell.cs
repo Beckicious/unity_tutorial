@@ -59,8 +59,49 @@ public class HexCell : MonoBehaviour
             Refresh();
         }
     }
-
     public bool IsUnderwater => waterLevel > elevation;
+
+    int urbanLevel;
+    public int UrbanLevel
+    {
+        get => urbanLevel;
+        set
+        {
+            if (urbanLevel != value)
+            {
+                urbanLevel = value;
+                RefreshSelfOnly();
+            }
+        }
+    }
+    int farmLevel;
+    public int FarmLevel
+    {
+        get => farmLevel;
+        set
+        {
+            if (farmLevel != value)
+            {
+                farmLevel = value;
+                RefreshSelfOnly();
+            }
+        }
+    }
+    int plantLevel;
+    public int PlantLevel
+    {
+        get => plantLevel;
+        set
+        {
+            if (plantLevel != value)
+            {
+                plantLevel = value;
+                RefreshSelfOnly();
+            }
+        }
+    }
+
+
 
     public Vector3 Position
     {
