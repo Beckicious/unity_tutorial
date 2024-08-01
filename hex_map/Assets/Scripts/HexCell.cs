@@ -101,6 +101,20 @@ public class HexCell : MonoBehaviour
         }
     }
 
+    bool walled;
+    public bool Walled
+    {
+        get => walled;
+        set
+        {
+            if (walled != value)
+            {
+                walled = value;
+                Refresh();
+            }
+        }
+    }
+
 
 
     public Vector3 Position
