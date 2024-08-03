@@ -1,14 +1,13 @@
-using System;
-using UnityEditor.XR;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class HexMapEditor : MonoBehaviour
 {
-    public Color[] colors;
     public HexGrid hexGrid;
 
-    private Color activeColor;
+    int activeTerrainTypeIndex;
+
     int activeElevation;
     int activeWaterLevel;
     int activeUrbanLevel;
@@ -16,13 +15,12 @@ public class HexMapEditor : MonoBehaviour
     int activePlantLevel;
     int activeSpecialIndex;
 
-    bool applyColor;
-    bool applyElevation = true;
-    bool applyWaterLevel = true;
-    bool applyUrbanLevel = true;
-    bool applyFarmLevel = true;
-    bool applyPlantLevel = true;
-    bool applySpecialIndex = true;
+    bool applyElevation = false;
+    bool applyWaterLevel = false;
+    bool applyUrbanLevel = false;
+    bool applyFarmLevel = false;
+    bool applyPlantLevel = false;
+    bool applySpecialIndex = false;
 
     int brushSize;
 
@@ -39,11 +37,6 @@ public class HexMapEditor : MonoBehaviour
     bool isDrag;
     HexDirection dragDirection;
     HexCell previousCell;
-
-    private void Awake()
-    {
-        SelectColor(1);
-    }
 
     private void Update()
     {
@@ -125,9 +118,9 @@ public class HexMapEditor : MonoBehaviour
     {
         if (cell)
         {
-            if (applyColor)
+            if (activeTerrainTypeIndex >= 0)
             {
-                cell.Color = activeColor;
+                cell.TerrainTypeIndex = activeTerrainTypeIndex;
             }
             if (applyElevation)
             {
@@ -159,7 +152,7 @@ public class HexMapEditor : MonoBehaviour
             }
             if (roadMode == OptionalToggle.No)
             {
-                cell .RemoveRoads();
+                cell.RemoveRoads();
             }
             if (walledMode != OptionalToggle.Ignore)
             {
@@ -183,13 +176,9 @@ public class HexMapEditor : MonoBehaviour
         }
     }
 
-    public void SelectColor(int index)
+    public void SetTerrainTypeIndex(int index)
     {
-        applyColor = index >= 0;
-        if (applyColor)
-        {
-            activeColor = colors[index];
-        }
+        activeTerrainTypeIndex = index;
     }
 
     public void SetApplyElevation(bool toggle)
@@ -270,5 +259,32 @@ public class HexMapEditor : MonoBehaviour
     public void SetSpecialIndex(float index)
     {
         activeSpecialIndex = (int)index;
+    }
+
+    public void Save()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "test.map");
+        using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create)))
+        {
+            writer.Write(0);
+            hexGrid.Save(writer);
+        }
+    }
+
+    public void Load()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "test.map");
+        using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
+        {
+            int header = reader.ReadInt32();
+            if (header == 0)
+            {
+                hexGrid.Load(reader);
+            }
+            else
+            {
+                Debug.Log("Unknown map format " + header);
+            }
+        }
     }
 }
