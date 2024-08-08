@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HexMapCamera : MonoBehaviour
@@ -22,6 +20,21 @@ public class HexMapCamera : MonoBehaviour
 
     public float rotationSpeed;
     float rotationAngle;
+
+    public static bool Locked
+    {
+        set
+        {
+            instance.enabled = !value;
+        }
+    }
+
+    static HexMapCamera instance;
+
+    private void OnEnable()
+    {
+        instance = this;
+    }
 
     private void Awake()
     {
@@ -89,12 +102,17 @@ public class HexMapCamera : MonoBehaviour
 
     Vector3 ClampPosition(Vector3 position)
     {
-        float xMax = (grid.chunkCountX * HexMetrics.chunkSizeX - 0.5f) * (2f * HexMetrics.innerRadius);
+        float xMax = (grid.cellCountX * HexMetrics.chunkSizeX - 0.5f) * (2f * HexMetrics.innerRadius);
         position.x = Mathf.Clamp(position.x, 0f, xMax);
 
-        float zMax = (grid.chunkCountZ * HexMetrics.chunkSizeZ - 1f) * (1.5f * HexMetrics.outerRadius);
+        float zMax = (grid.cellCountZ * HexMetrics.chunkSizeZ - 1f) * (1.5f * HexMetrics.outerRadius);
         position.z = Mathf.Clamp(position.z, 0f, zMax);
 
         return position;
+    }
+
+    public static void ValidatePosition()
+    {
+        instance.AdjustPosition(0f, 0f);
     }
 }

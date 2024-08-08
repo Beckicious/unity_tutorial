@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 public class HexGrid : MonoBehaviour
 {
-    public int chunkCountX = 4;
-    public int chunkCountZ = 3;
+    public int cellCountX = 20;
+    public int cellCountZ = 15;
 
-    int cellCountX;
-    int cellCountZ;
+    int chunkCountX;
+    int chunkCountZ;
 
     public HexGridChunk chunkPrefab;
     HexGridChunk[] chunks;
@@ -30,12 +30,34 @@ public class HexGrid : MonoBehaviour
         HexMetrics.noiseSource = noiseSource;
         HexMetrics.InitializeHashGrid(seed);
         HexMetrics.colors = colors;
+        CreateMap(cellCountX, cellCountZ);
+    }
 
-        cellCountX = chunkCountX * HexMetrics.chunkSizeX;
-        cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
+    public bool CreateMap(int x, int z)
+    {
+        if (x <= 0 || x % HexMetrics.chunkSizeX != 0 ||
+            z <= 0 || z % HexMetrics.chunkSizeZ != 0)
+        {
+            Debug.LogError("Unsupported map size.");
+            return false;
+        }
 
+        if (chunks != null)
+        {
+            for (int i = 0; i < chunks.Length; i++)
+            {
+                Destroy(chunks[i].gameObject);
+            }
+        }
+
+        cellCountX = x;
+        cellCountZ = z;
+        chunkCountX = cellCountX / HexMetrics.chunkSizeX;
+        chunkCountZ = cellCountZ / HexMetrics.chunkSizeZ;
         CreateChunks();
         CreateCells();
+
+        return true;
     }
 
     void CreateChunks()
@@ -163,14 +185,32 @@ public class HexGrid : MonoBehaviour
 
     public void Save(BinaryWriter writer)
     {
+        writer.Write(cellCountX);
+        writer.Write(cellCountZ);
+
         for (int i = 0; i < cells.Length; i++)
         {
             cells[i].Save(writer);
         }
     }
 
-    public void Load(BinaryReader reader)
+    public void Load(BinaryReader reader, int header)
     {
+        int x = 20;
+        int z = 15;
+        if (header >= 1)
+        {
+            x = reader.ReadInt32();
+            z = reader.ReadInt32();
+        }
+        if (x != cellCountX || z != cellCountZ)
+        {
+            if (!CreateMap(x, z))
+            {
+                return;
+            }
+        }
+
         for (int i = 0; i < cells.Length; i++)
         {
             cells[i].Load(reader);
