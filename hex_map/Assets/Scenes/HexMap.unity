@@ -1479,12 +1479,6 @@ MonoBehaviour:
   cellLabelPrefab: {fileID: 208853228684124237, guid: 35354134d8e07914b9051a12acf920a8, type: 3}
   noiseSource: {fileID: 2800000, guid: 38726d1913ac80b4b92a8926166c13df, type: 3}
   seed: 1234
-  colors:
-  - {r: 0.8113208, g: 0.7825077, b: 0, a: 0}
-  - {r: 0, g: 0.3490566, b: 0.025414456, a: 0}
-  - {r: 0, g: 0.021448731, b: 0.7075472, a: 0}
-  - {r: 0.745283, g: 0.010546438, b: 0.010546438, a: 0}
-  - {r: 1, g: 1, b: 1, a: 0}
   touchedColor: {r: 1, g: 0, b: 1, a: 1}
 --- !u!4 &187932348
 Transform:
@@ -2545,7 +2539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 187932347}
-  stickMinZoom: -250
+  stickMinZoom: -1000
   stickMaxZoom: -45
   swivelMinZoom: 90
   swivelMaxZoom: 45
@@ -7690,7 +7684,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
