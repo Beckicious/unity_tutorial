@@ -472,7 +472,7 @@ GameObject:
   - component: {fileID: 46282995}
   - component: {fileID: 46282996}
   m_Layer: 5
-  m_Name: ToggleBlue
+  m_Name: ToggleMud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1046,7 +1046,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Red
+  m_Text: Stone
 --- !u!222 &86224971
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1434,7 +1434,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: White
+  m_Text: Snow
 --- !u!222 &172801085
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1796,7 +1796,7 @@ GameObject:
   - component: {fileID: 226258741}
   - component: {fileID: 226258742}
   m_Layer: 5
-  m_Name: ToggleRed
+  m_Name: ToggleStone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4219,7 +4219,7 @@ GameObject:
   - component: {fileID: 642894410}
   - component: {fileID: 642894411}
   m_Layer: 5
-  m_Name: ToggleGreen
+  m_Name: ToggleGrass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8460,7 +8460,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Blue
+  m_Text: Mud
 --- !u!222 &1054349050
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9475,7 +9475,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Yellow
+  m_Text: Sand
 --- !u!222 &1169076996
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9872,7 +9872,7 @@ GameObject:
   - component: {fileID: 1202958973}
   - component: {fileID: 1202958974}
   m_Layer: 5
-  m_Name: ToggleYellow
+  m_Name: ToggleSand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10503,7 +10503,7 @@ GameObject:
   - component: {fileID: 1360715139}
   - component: {fileID: 1360715140}
   m_Layer: 5
-  m_Name: ToggleWhite
+  m_Name: ToggleSnow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15991,7 +15991,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Green
+  m_Text: Grass
 --- !u!222 &2085874166
 CanvasRenderer:
   m_ObjectHideFlags: 0
